@@ -8,11 +8,13 @@
 \ProvidesPackage{olymp}
 
 \usepackage{verbatim}
+\usepackage{lastpage}
 
 
 \newif\if@landscape\@landscapefalse
 \newif\if@russian\@russianfalse
 \newif\if@arabic\@arabicfalse
+\newif\if@zhHans\@zhHansfalse
 
 \DeclareOption{landscape}{
     \@landscapetrue
@@ -22,6 +24,9 @@
 }
 \DeclareOption{arabic}{
     \@arabictrue
+}
+\DeclareOption{zhHans}{
+    \@zhHanstrue
 }
 \ProcessOptions\relax
 
@@ -123,6 +128,8 @@
 \renewcommand{\ge}{\geqslant}
 \renewcommand{\leq}{\leqslant}
 \renewcommand{\geq}{\geqslant}
+\else\if@zhHans
+\parskip=1ex
 \else
 \parindent=0mm
 \parskip=1ex
@@ -171,10 +178,55 @@
 \def\kw@points{баллы}
 \def\kw@Page{Страница}
 \def\kw@of{из}
+\def\kw@PageEnd{}
 \def\kw@notstated{не указан}
 \def\kw@IntentionallyBlankPage{Эта страница специально оставлена пустой}
 \def\kw@defaultinputname{тест}
 \def\kw@defaultoutputname{ответ}
+\else\if@zhHans
+\def\kw@ProblemTutorial{题解}
+\def\kw@Problem{Problem}
+\def\kw@ProblemAuthor{作者:}
+\def\kw@ProblemDeveloper{开发:}
+\def\kw@ProblemOrigin{原题:}
+\def\kw@InputFileName{输入文件:}
+\def\kw@OutputFileName{输出文件:}
+\def\kw@TimeLimit{时间限制:}
+\def\kw@MemoryLimit{内存限制:}
+\def\kw@Feedback{反馈方式:}
+\def\kw@stdin{标准输入}
+\def\kw@stdout{标准输出}
+\def\kw@Specification{数据范围}
+\def\kw@Interaction{交互方式}
+\def\kw@Input{输入格式}
+\def\kw@Output{输出格式}
+\def\kw@Example{样例}
+\def\kw@Examples{样例}
+\def\kwExampleNotes{样例提示}
+\def\kw@Explanation{样例解释}
+\def\kw@Explanations{样例解释}
+\def\kw@Illustration{插图}
+\def\kw@Scoring{评分方式}
+\def\kw@Note{提示}
+\def\kw@Notes{提示}
+\def\kw@Constraints{限制}
+\def\kw@version{版本}
+\def\kw@revision{副版本}
+\def\kw@SubtaskOne{子问题 1}
+\def\kw@SubtaskTwo{子问题 2}
+\def\kw@SubtaskThree{子问题 3}
+\def\kw@SubtaskFour{子问题 4}
+\def\kw@SubtaskFive{子问题 5}
+\def\kw@SubtaskSix{子问题 6}
+\def\kw@Subtask{子问题}
+\def\kw@points{分数}
+\def\kw@Page{第}
+\def\kw@of{页，共}
+\def\kw@PageEnd{页}
+\def\kw@notstated{not stated}
+\def\kw@IntentionallyBlankPage{这一页为空白页}
+\def\kw@defaultinputname{test}
+\def\kw@defaultoutputname{answer}
 \else
 \def\kw@ProblemTutorial{Problem Tutorial}
 \def\kw@Problem{Problem}
@@ -214,6 +266,7 @@
 \def\kw@points{points}
 \def\kw@Page{Page}
 \def\kw@of{of}
+\def\kw@PageEnd{}
 \def\kw@notstated{not stated}
 \def\kw@IntentionallyBlankPage{This page is intentionally left blank}
 \def\kw@defaultinputname{test}
@@ -322,6 +375,8 @@
 
 \if@russian
 \def\defaulttimelimit{2 секунды}
+\else\if@zhHans
+\def\defaulttimelimit{2 秒}
 \else
 \def\defaulttimelimit{2 seconds}
 \fi
@@ -636,7 +691,20 @@
 \newcommand{\thecontestdate}{Once upon a time}
 \newcommand{\therevision}{undefined}
 
-\DeclareRobustCommand{\contestname}{\thecontestname\par\thecontestlocation\unskip, \thecontestdate}
+\DeclareRobustCommand{\contestname}{%
+\thecontestname%
+\if\thecontestlocation\empty%
+    \ifx\thecontestdate\empty%
+        \par\thecontestdate%
+    \fi%
+\else%
+    \if\thecontestdate\empty%
+        \par\thecontestlocation%
+    \else%
+        \par\thecontestlocation\unskip, \thecontestdate%
+    \fi%
+\fi%
+}
 
 \DeclareRobustCommand{\contest}[3]{
     \renewcommand{\thecontestname}{#1}
@@ -652,7 +720,7 @@
 
 \renewcommand{\@oddhead}{
     \parbox{\textwidth}{
-        \sffamily
+        \noindent\sffamily
         \begin{center}
             \protect\contestname
             \\[2pt]
@@ -667,39 +735,54 @@
 % Revision signature
 \ifrevisionsignature%
 %\if@revsign%
-	{\gdef\rsigfooter{, \kw@revision\ \therevision}}%
+    {\gdef\rsigfooter{, \kw@revision\ \therevision}}%
 \else%
-	{\gdef\rsigfooter{}}%
+    {\gdef\rsigfooter{}}%
 \fi%
 
 \ifdisplayauthorinfooter%
 %\if@newfooter%
-	{\gdef\thefooter%
+    {\gdef\thefooter%
         {~\quad{\kw@Problem\ \problemletter%
         \ifdefined\DivisionNumber{ (Div.~\DivisionNumber)}\fi}%
         {\hfill}%
         {\kw@ProblemAuthor~\lastproblemauthor}%
         {\hfill}%
-        {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}\quad~}}%
+        \if\empty\kw@PageEnd%
+            {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}%
+        \else%
+            {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\ \kw@PageEnd\rsigfooter}%
+        \fi%
+        \quad~}}%
 \else%
 \ifdisplaydeveloperinfooter%
-	{\gdef\thefooter%
+    {\gdef\thefooter%
         {~\quad{\kw@Problem\ \problemletter}%
         {\hfill}%
         {\kw@ProblemDeveloper~\lastproblemdeveloper}%
         {\hfill}%
-        {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}\quad~}}%
+        \if\empty\kw@PageEnd%
+            {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}%
+        \else%
+            {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\ \kw@PageEnd\rsigfooter}%
+        \fi%
+        \quad~}}%
 \else%
-	{\gdef\thefooter%
-        {{\hfil}\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter\hfil}}%
+    {\gdef\thefooter%
+        {{\hfil}
+        \if\empty\kw@PageEnd%
+            {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}%
+        \else%
+            {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\ \kw@PageEnd\rsigfooter}%
+        \fi%
+        {\hfil}}}%
 \fi%
 \fi%
 
     \parbox{\textwidth}{
         \hrule
         \vspace{6pt}
-        \sffamily
-        \thefooter
+        \noindent\sffamily\thefooter
     }
 }
 
