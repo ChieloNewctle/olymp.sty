@@ -9,6 +9,7 @@
 
 \usepackage{verbatim}
 \usepackage{lastpage}
+\usepackage{xifthen}
 
 
 \newif\if@landscape\@landscapefalse
@@ -691,26 +692,25 @@
 \newcommand{\thecontestdate}{Once upon a time}
 \newcommand{\therevision}{undefined}
 
-\DeclareRobustCommand{\contestname}{%
-\thecontestname%
-\ifx\thecontestlocation\empty%
-    \ifx\thecontestdate\empty%
-    \else%
-        \par\thecontestdate%
-    \fi%
-\else%
-    \ifx\thecontestdate\empty%
-        \par\thecontestlocation%
-    \else%
-        \par\thecontestlocation\unskip, \thecontestdate%
-    \fi%
-\fi%
-}
+\newcommand{\contestname}{\thecontestname\par\thecontestlocation\unskip, \thecontestdate}
 
-\DeclareRobustCommand{\contest}[3]{
+\newcommand{\contest}[3]{
     \renewcommand{\thecontestname}{#1}
     \renewcommand{\thecontestlocation}{#2}
     \renewcommand{\thecontestdate}{#3}
+    \ifthenelse{\isempty{#2}}{%
+        \ifthenelse{\isempty{#3}}{%
+            \renewcommand{\contestname}{\thecontestname}
+        }{%
+            \renewcommand{\contestname}{\thecontestname\par\thecontestdate}
+        }%
+    }{%
+        \ifthenelse{\isempty{#3}}{%
+            \renewcommand{\contestname}{\thecontestname\par\thecontestlocation}
+        }{%
+            \newcommand{\contestname}{\thecontestname\par\thecontestlocation\unskip, \thecontestdate}
+        }%
+    }
 }
 
 \DeclareRobustCommand{\revision}[1]{
