@@ -693,12 +693,13 @@
 
 \DeclareRobustCommand{\contestname}{%
 \thecontestname%
-\if\thecontestlocation\empty%
+\ifx\thecontestlocation\empty%
     \ifx\thecontestdate\empty%
+    \else%
         \par\thecontestdate%
     \fi%
 \else%
-    \if\thecontestdate\empty%
+    \ifx\thecontestdate\empty%
         \par\thecontestlocation%
     \else%
         \par\thecontestlocation\unskip, \thecontestdate%
@@ -748,7 +749,7 @@
         {\hfill}%
         {\kw@ProblemAuthor~\lastproblemauthor}%
         {\hfill}%
-        \if\empty\kw@PageEnd%
+        \ifx\kw@PageEnd\empty%
             {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}%
         \else%
             {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\ \kw@PageEnd\rsigfooter}%
@@ -761,7 +762,7 @@
         {\hfill}%
         {\kw@ProblemDeveloper~\lastproblemdeveloper}%
         {\hfill}%
-        \if\empty\kw@PageEnd%
+        \ifx\kw@PageEnd\empty%
             {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}%
         \else%
             {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\ \kw@PageEnd\rsigfooter}%
@@ -770,7 +771,7 @@
 \else%
     {\gdef\thefooter%
         {{\hfil}
-        \if\empty\kw@PageEnd%
+        \ifx\kw@PageEnd\empty%
             {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\rsigfooter}%
         \else%
             {\kw@Page\ \thepage\ \kw@of\ \pageref{LastPage}\ \kw@PageEnd\rsigfooter}%
