@@ -295,7 +295,7 @@
 }
 \newcommand{\problemtextfont}{\normalsize}
 \newcommand{\beforeproblemsectioncaption}{\smallbreak\smallskip}
-\newcommand{\afterproblemsectioncaption}{\smallskip}
+\newcommand{\afterproblemsectioncaption}{\smallskip\nobreak\@afterheading}
 
 \if@twocolumn
     \afterproblemhead=1mm
@@ -305,7 +305,7 @@
     \renewcommand{\problemend}{\par\medskip}
     \renewcommand{\problemtextfont}{\footnotesize}
     \renewcommand{\beforeproblemsectioncaption}{\smallbreak\smallskip}
-    \renewcommand{\afterproblemsectioncaption}{}
+    \renewcommand{\afterproblemsectioncaption}{\nobreak\@afterheading}
 \fi
 
 % -- End of setup keywords --
