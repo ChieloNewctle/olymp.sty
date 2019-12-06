@@ -10,6 +10,7 @@
 \usepackage{verbatim}
 \usepackage{lastpage}
 \usepackage{xifthen}
+\usepackage{setspace}
 
 
 \newif\if@landscape\@landscapefalse
@@ -547,16 +548,16 @@
 }
 
 % This is magic, which delete space after verbatiminput
-\addto@hook{\every@verbatim}{\topsep=0pt\relax}
+\addto@hook{\every@verbatim}{\topsep=0pt\partopsep=0pt\relax}
 
 % :FIXME:
 \newenvironment{example}[1][]{
     \s@tm@cr@s#1
-    \ttfamily\obeylines\obeyspaces\frenchspacing
+    \ttfamily\singlespacing\obeylines\obeyspaces\frenchspacing
     \newcommand{\exmp}[2]{
         \ifdefined\NoExamples\else%
-        \begin{minipage}[t]{\exmpwidinf}\rightskip=0pt plus 1fill\relax##1\medskip\end{minipage}&
-        \begin{minipage}[t]{\exmpwidouf}\rightskip=0pt plus 1fill\relax##2\medskip\end{minipage}\\
+        \begin{minipage}[t]{\exmpwidinf}\rightskip=0pt plus 1fill\relax##1\smallskip\end{minipage}&
+        \begin{minipage}[t]{\exmpwidouf}\rightskip=0pt plus 1fill\relax##2\smallskip\end{minipage}\\
         \hline
         \fi%
     }
